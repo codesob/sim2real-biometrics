@@ -125,7 +125,6 @@ dmypy.json
 # Data folders
 data/
 dataset/
-saved_models/
 
 # IDE
 .vscode/
