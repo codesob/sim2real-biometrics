@@ -1,0 +1,11 @@
+torch
+torchvision
+opencv-python
+facenet-pytorch
+scikit-learn
+matplotlib
+tqdm
+pytorch-grad-cam
+numpy<2.0.0
+pillow
+seaborn
