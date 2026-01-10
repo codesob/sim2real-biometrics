@@ -25,6 +25,7 @@ def plot_training_history(history):
     ax1.set_title("Real Training Loss Convergence")
     ax1.set_xlabel("Epochs")
     ax1.set_ylabel("Loss")
+    ax1.set_xticks(np.arange(min(epochs), max(epochs)+1, 2)) # Steps of 2 to avoid overlap
     ax1.grid(True, alpha=0.3)
     ax1.legend()
 
@@ -33,12 +34,14 @@ def plot_training_history(history):
     ax2.set_title("Sim2Real Generalization Gap")
     ax2.set_xlabel("Epochs")
     ax2.set_ylabel("Accuracy (%)")
+    ax2.set_xticks(np.arange(min(epochs), max(epochs)+1, 2)) # Steps of 2 to avoid overlap
     ax2.grid(True, alpha=0.3)
     ax2.legend()
     
     save_path = os.path.join("training_dynamics_chart.png")
     plt.savefig(save_path, dpi=300)
     print(f"Chart Saved to: {save_path}")
+    
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

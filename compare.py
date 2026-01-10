@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from model import Sim2RealBackbone
+from model_scratch import Sim2RealBackbone as ScratchBackbone
 from sklearn.metrics import auc, roc_curve
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,24 +14,28 @@ from tqdm import tqdm
 LFW_DIR = "./dataset/lfw_aligned"
 BASELINE_PATH = "./saved_models/baseline_model.pth"
 PROPOSED_PATH = "./saved_models/best_model.pth" 
+SCRATCH_PATH = "./saved_models/best_scratch_model.pth"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 PAIRS_TO_TEST = 12000
 
-def get_roc_data(model_path, dataset, pos_pairs, neg_pairs, label_name):
+def get_roc_data(model_path, dataset, pos_pairs, neg_pairs, label_name, model_class):
     print(f"\n--- Testing {label_name} ---")
     if not os.path.exists(model_path):
         print(f"Error: {model_path} not found.")
         return None, None, 0.0
 
-    model = Sim2RealBackbone(pretrained=False).to(DEVICE)
-    model.load_state_dict(torch.load(model_path, map_location=DEVICE))
+    model = model_class(pretrained=False).to(DEVICE)
+    try:
+        model.load_state_dict(torch.load(model_path, map_location=DEVICE))
+    except RuntimeError as e:
+        print(f"Error loading state dict for {label_name}: {e}")
+        return None, None, 0.0
+
     model.eval()
-    
-    # embeddings efficiently
+  
     all_pairs = pos_pairs + neg_pairs
     all_labels = [1] * len(pos_pairs) + [0] * len(neg_pairs)
     
-    # Unique Loader
     unique_indices = list(set([p[0] for p in all_pairs] + [p[1] for p in all_pairs]))
     index_map = {idx: i for i, idx in enumerate(unique_indices)}
     subset = torch.utils.data.Subset(dataset, unique_indices)
@@ -58,6 +63,7 @@ def get_roc_data(model_path, dataset, pos_pairs, neg_pairs, label_name):
 
 def main():
     if not os.path.exists(PROPOSED_PATH):
+        print(f"Proposed path {PROPOSED_PATH} not found.")
         return
 
     transform = transforms.Compose([
@@ -84,20 +90,26 @@ def main():
         while targets[idx1] == targets[idx2]: idx1, idx2 = random.sample(range(len(full_lfw)), 2)
         neg_pairs.append((idx1, idx2))
 
-    fpr_b, tpr_b, auc_b = get_roc_data(BASELINE_PATH, full_lfw, pos_pairs, neg_pairs, "Baseline")
-    fpr_p, tpr_p, auc_p = get_roc_data(PROPOSED_PATH, full_lfw, pos_pairs, neg_pairs, "Proposed")
+    fpr_b, tpr_b, auc_b = get_roc_data(BASELINE_PATH, full_lfw, pos_pairs, neg_pairs, "Baseline", Sim2RealBackbone)
+    fpr_p, tpr_p, auc_p = get_roc_data(PROPOSED_PATH, full_lfw, pos_pairs, neg_pairs, "Proposed", Sim2RealBackbone)
+    fpr_s, tpr_s, auc_s = get_roc_data(SCRATCH_PATH, full_lfw, pos_pairs, neg_pairs, "Scratch", ScratchBackbone)
 
     plt.figure(figsize=(10, 8))
-    plt.plot(fpr_b, tpr_b, color='blue', lw=2, linestyle='--', label=f'Baseline (No Blur) AUC = {auc_b:.2f}')
-    plt.plot(fpr_p, tpr_p, color='darkorange', lw=2, label=f'Proposed (With Blur) AUC = {auc_p:.2f}')
+    if fpr_b is not None:
+        plt.plot(fpr_b, tpr_b, color='navy', lw=3, linestyle='--', label=f'Baseline (No Blur) AUC = {auc_b:.2f}')
+    if fpr_p is not None:
+        plt.plot(fpr_p, tpr_p, color='crimson', lw=3, label=f'Proposed (With Blur) AUC = {auc_p:.2f}')
+    if fpr_s is not None:
+        plt.plot(fpr_s, tpr_s, color='darkorange', lw=3, linestyle='-.', label=f'Scratch AUC = {auc_s:.2f}')
+        
     plt.plot([0, 1], [0, 1], color='gray', linestyle=':')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('Sim2Real Gap Analysis: Texture Regularization Impact')
+    plt.title('Sim2Real Gap Analysis: Comparison with Scratch')
     plt.legend(loc="lower right")
     plt.grid(True, alpha=0.3)
-    plt.savefig('./final_comparison_plots/final_comparison_chart.png')
-    print("Graph saved to final_comparison_chart.png")
+    plt.savefig('./final_comparison_plots/final_comparison_chart_with_scratch.png')
+    print("Graph saved to final_comparison_chart_with_scratch.png")
 
 if __name__ == "__main__":
     main()
