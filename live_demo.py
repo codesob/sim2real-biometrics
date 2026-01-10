@@ -7,7 +7,7 @@ from facenet_pytorch import MTCNN
 from model import Sim2RealBackbone
 import time
 
-MODEL_PATH = "./saved_models/best_model.pth"
+MODEL_PATH = "./saved_models/best_scratch_model.pth"
 THRESHOLD = 0.42 
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

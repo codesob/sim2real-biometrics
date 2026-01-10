@@ -13,8 +13,12 @@ class ArcFaceLoss(nn.Module):
         self.weight = nn.Parameter(torch.FloatTensor(out_features, in_features))
         nn.init.xavier_uniform_(self.weight)
 
-    def forward(self, embedding, label):
+    def forward(self, embedding, label=None):
         cosine = F.linear(F.normalize(embedding), F.normalize(self.weight))
+        
+        if label is None:
+            return cosine * self.s
+
         cosine = cosine.clamp(-1+1e-7, 1-1e-7)
         theta = torch.acos(cosine)
         target_logit = torch.cos(theta + self.m)
