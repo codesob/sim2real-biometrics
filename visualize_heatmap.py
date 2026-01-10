@@ -6,15 +6,17 @@ import os
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 from model import Sim2RealBackbone
+from model_scratch import Sim2RealBackbone as ScratchBackbone
 
 PATH_BASELINE = "./saved_models/baseline_model.pth" 
-PATH_PROPOSED = "./saved_models/best_model.pth"     
+PATH_PROPOSED = "./saved_models/best_model.pth"
+PATH_SCRATCH = "./saved_models/best_scratch_model.pth"     
 
 TEST_IMAGE_PATH = "./dataset/lfw_aligned/George_Bush/George_Bush_0001.jpg"
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def get_heatmap(model_path, input_tensor, rgb_img):
+def get_heatmap(model_path, input_tensor, rgb_img, is_scratch=False):
     """Loads a model and generates the Grad-CAM overlay"""
     if not os.path.exists(model_path):
         print(f"Error: Model not found at {model_path}")
@@ -22,12 +24,16 @@ def get_heatmap(model_path, input_tensor, rgb_img):
 
     print(f"Loading {os.path.basename(model_path)}...")
     
-    model = Sim2RealBackbone(pretrained=False).to(DEVICE)
+    if is_scratch:
+        model = ScratchBackbone(pretrained=False).to(DEVICE)
+        target_layers = [model.backbone.layer4[-1]]
+    else:
+        model = Sim2RealBackbone(pretrained=False).to(DEVICE)
+        target_layers = [model.features[-2][-1]]
+    
     state = torch.load(model_path, map_location=DEVICE)
     model.load_state_dict(state)
     model.eval()
-
-    target_layers = [model.backbone.layer4[-1]]
 
     cam = GradCAM(model=model, target_layers=target_layers)
 
@@ -59,26 +65,30 @@ def main():
                                    std=[0.5, 0.5, 0.5]).to(DEVICE)
 
     vis_baseline = get_heatmap(PATH_BASELINE, input_tensor, rgb_float)
-
     vis_proposed = get_heatmap(PATH_PROPOSED, input_tensor, rgb_float)
+    vis_scratch = get_heatmap(PATH_SCRATCH, input_tensor, rgb_float, is_scratch=True)
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    fig, axes = plt.subplots(1, 4, figsize=(20, 5))
     
     axes[0].imshow(rgb_img)
     axes[0].set_title("Input (Real Face)")
     axes[0].axis('off')
 
     axes[1].imshow(vis_baseline)
-    axes[1].set_title("Baseline Attention\n(Texture Bias?)")
+    axes[1].set_title("Baseline Attention\n(Pretrained ResNet-50)")
     axes[1].axis('off')
 
     axes[2].imshow(vis_proposed)
-    axes[2].set_title("Proposed Attention\n(Shape Bias!)")
+    axes[2].set_title("Proposed Attention\n(Fine-tuned + Augmentation)")
     axes[2].axis('off')
 
-    plt.suptitle("Interpretability Analysis: Grad-CAM Feature Attention")
+    axes[3].imshow(vis_scratch)
+    axes[3].set_title("Scratch Attention\n(Trained from Scratch)")
+    axes[3].axis('off')
+
+    plt.suptitle("Interpretability Analysis: Grad-CAM Feature Attention Comparison")
     save_path = "./final_heatmap_comparison.png"
-    plt.savefig(save_path, dpi=300)
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
     print(f"Saved comparison to {save_path}")
 
 if __name__ == "__main__":

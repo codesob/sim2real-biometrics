@@ -120,13 +120,13 @@ class ArcFaceLoss(nn.Module):
         return output
 
 class Sim2RealBackbone(nn.Module):
-    def __init__(self, pretrained=False): # PRETRAINED IS FALSE
+    def __init__(self, pretrained=False): 
         super(Sim2RealBackbone, self).__init__()
         
         self.backbone = resnet18()
      
         self.dropout = nn.Dropout(p=0.4) 
-        self.fc = nn.Linear(512, 512) # Adjusted for ResNet18
+        self.fc = nn.Linear(512, 512) 
         self.bn = nn.BatchNorm1d(512)
 
     def forward(self, x):
