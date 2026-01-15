@@ -15,7 +15,7 @@ import torchvision.transforms.functional as TF
 
 
 LFW_DIR = "./dataset/lfw_aligned"
-MODEL_PATH = "./saved_models/best_model.pth"
+MODEL_PATH = "./saved_models/proposed_strong_model.pth"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 BATCH_SIZE = 32
 PAIRS_TO_GENERATE = 12000  

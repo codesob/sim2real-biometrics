@@ -93,7 +93,7 @@ def resnet18(pretrained=False, **kwargs):
     return model
 
 class ArcFaceLoss(nn.Module):
-    def __init__(self, in_features=512, out_features=1000, s=30.0, m=0.50):
+    def __init__(self, in_features=512, out_features=1000, s=64.0, m=0.50):
         super(ArcFaceLoss, self).__init__()
         self.in_features = in_features
         self.out_features = out_features

@@ -8,11 +8,11 @@ from pytorch_grad_cam.utils.image import show_cam_on_image, preprocess_image
 from model import Sim2RealBackbone
 from model_scratch import Sim2RealBackbone as ScratchBackbone
 
-PATH_BASELINE = "./saved_models/baseline_model.pth" 
-PATH_PROPOSED = "./saved_models/best_model.pth"
-PATH_SCRATCH = "./saved_models/best_scratch_model.pth"     
+PATH_BASELINE = "./saved_models/base_model.pth" 
+PATH_PROPOSED = "./saved_models/proposed_strong_model.pth"
+PATH_SCRATCH = "./saved_models/proposed_best.pth"     
 
-TEST_IMAGE_PATH = "./dataset/lfw_aligned/George_Bush/George_Bush_0001.jpg"
+TEST_IMAGE_PATH = "./dataset/lfw_aligned/George_Voinovich/George_Voinovich_0002.jpg"
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

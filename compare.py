@@ -12,9 +12,9 @@ import random
 from tqdm import tqdm
 
 LFW_DIR = "./dataset/lfw_aligned"
-BASELINE_PATH = "./saved_models/baseline_model.pth"
-PROPOSED_PATH = "./saved_models/best_model.pth" 
-SCRATCH_PATH = "./saved_models/best_scratch_model.pth"
+BASELINE_PATH = "./saved_models/base_model.pth"
+PROPOSED_PATH = "./saved_models/proposed_strong_model.pth" 
+SCRATCH_PATH = "./saved_models/proposed_best.pth"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 PAIRS_TO_TEST = 12000
 
@@ -108,8 +108,8 @@ def main():
     plt.title('Sim2Real Gap Analysis: Comparison with Scratch')
     plt.legend(loc="lower right")
     plt.grid(True, alpha=0.3)
-    plt.savefig('./final_comparison_plots/final_comparison_chart_with_scratch.png')
-    print("Graph saved to final_comparison_chart_with_scratch.png")
+    plt.savefig('./final_comparison_plots/final_comparison_chart.png')
+    print("Graph saved to final_comparison_chart.png")
 
 if __name__ == "__main__":
     main()

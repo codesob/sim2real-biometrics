@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torchvision.models as models
 
 class ArcFaceLoss(nn.Module):
-    def __init__(self, in_features=512, out_features=1000, s=30.0, m=0.5):
+    def __init__(self, in_features=512, out_features=1000, s=64.0, m=0.5):
         super(ArcFaceLoss, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
