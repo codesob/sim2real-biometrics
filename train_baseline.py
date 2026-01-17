@@ -49,7 +49,7 @@ def plot_training_history(history, filename="training_plot.png"):
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"--- BASE MODEL (CLEAN AUGMENTATIONS) on {device} ---")
+    print(f"--- BASE MODEL on {device} ---")
     
     if not os.path.exists(DATA_DIR):
         print(f"ERROR: Data folder not found!")
@@ -70,7 +70,6 @@ def main():
         transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
     ])
 
-    print("Loading Dataset...")
     full_ds_train = datasets.ImageFolder(root=DATA_DIR, transform=strong_clean_transform)
     full_ds_val   = datasets.ImageFolder(root=DATA_DIR, transform=val_transform)
     

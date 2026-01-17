@@ -38,7 +38,6 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"--- TRAINING STRONGER PROPOSED MODEL (SCRATCH) on {device} ---")
     
-    # 1. ENHANCED TRANSFORM (Domain Randomization)
     train_transform = transforms.Compose([
         transforms.Resize((112, 112)),
         transforms.RandomHorizontalFlip(),
@@ -60,7 +59,6 @@ def main():
         transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
     ])
 
-    # Loading Data
     full_ds_train = datasets.ImageFolder(root=DATA_DIR, transform=train_transform)
     full_ds_val   = datasets.ImageFolder(root=DATA_DIR, transform=val_transform)
     targets = full_ds_train.targets
@@ -70,12 +68,9 @@ def main():
     
     num_classes = len(full_ds_train.classes)
     
-    # 2. PROPOSED MODEL PARAMS (s=64.0 is standard for high performance)
-    # If truly scratch, ensure pretrained=False
     backbone = Sim2RealBackbone(pretrained=False).to(device) 
     metric_crit = ArcFaceLoss(in_features=512, out_features=num_classes, s=64.0, m=0.50).to(device)
 
-    # 3. OPTIMIZER & LOSS
     optimizer = optim.SGD([
         {'params': backbone.parameters(), 'lr': LR * 0.1},
         {'params': metric_crit.parameters(), 'lr': LR}
