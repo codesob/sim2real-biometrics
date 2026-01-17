@@ -11,10 +11,21 @@ We explore how aggressive data augmentation (blur, noise, perspectives) and arch
 ## ✨ Key Features
 
 - **Face Alignment**: Automated MTCNN-based alignment for both training and testing domains.
-- **Backbone Models**: Standard ResNet-50 baseline and an optimized-from-scratch ResNet-18.
+- **Backbone Models**:
+  - **Proposed (Strong)**: An optimized ResNet-50 with strong Sim2Real augmentations (Blur, Perspective) and Cosine Annealing.
+  - **Baseline (Standard)**: Standard ResNet-50 trained with basic DigiFace augmentations.
+  - **Scratch (Random)**: ResNet-18 trained from random initialization without synthetic pre-training to measure the "transfer gap".
 - **ArcFace Loss**: Metric learning for highly discriminative feature embeddings.
 - **Interpretability**: Integrated **Grad-CAM** to visualize where the model focuses (Texture vs. Shape).
 - **Live Demo**: A real-time webcam security system simulation to test enrollment and verification.
+
+## 📊 Benchmark Results (on LFW)
+
+| Model | AUC (Stability) | EER (Equilibrium) | TAR @ 1e-3 FAR |
+| :--- | :--- | :--- | :--- |
+| **Proposed (Strong)** | **0.911** | **16.03%** | **25.22%** |
+| **Baseline (Standard)** | 0.871 | 21.08% | 12.39% |
+| **Scratch (Random)** | 0.814 | 28.52% | 4.88% |
 
 ## 🛠️ Installation
 
