@@ -88,10 +88,8 @@ def evaluate_roc(model, dataset, pos_pairs, neg_pairs):
     with torch.no_grad():
         for imgs, _ in tqdm(loader):
             imgs = imgs.to(DEVICE)
-            # 1. Forward Original
             feat_original = model(imgs)
             
-            # 2. Forward Flipped
             imgs_flipped = TF.hflip(imgs)
             feat_flipped = model(imgs_flipped)
             

@@ -74,7 +74,6 @@ def calculate_pair_scores(embeddings, labels, num_pairs=3000):
     return pos_scores, neg_scores
 
 def plot_histogram_comparison(b_pos, b_neg, s_pos, s_neg, p_pos, p_neg):
-    """ SCORE DISTRIBUTION """
     fig, axes = plt.subplots(1, 3, figsize=(21, 6), sharey=True)
     
     # Baseline
@@ -109,7 +108,6 @@ def plot_histogram_comparison(b_pos, b_neg, s_pos, s_neg, p_pos, p_neg):
     print("Saved Histogram.")
 
 def plot_det_comparison(b_pos, b_neg, s_pos, s_neg, p_pos, p_neg):
-    """ DET CURVE (Security Standard) """
     # Baseline Metrics
     b_y_true = [1]*len(b_pos) + [0]*len(b_neg)
     b_y_score = b_pos + b_neg
