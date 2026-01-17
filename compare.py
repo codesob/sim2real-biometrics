@@ -14,7 +14,7 @@ from tqdm import tqdm
 LFW_DIR = "./dataset/lfw_aligned"
 BASELINE_PATH = "./saved_models/base_model.pth"
 PROPOSED_PATH = "./saved_models/proposed_strong_model.pth" 
-SCRATCH_PATH = "./saved_models/proposed_best.pth"
+SCRATCH_PATH = "./saved_models/scratch_model.pth"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 PAIRS_TO_TEST = 12000
 

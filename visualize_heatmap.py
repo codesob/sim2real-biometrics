@@ -10,7 +10,7 @@ from model_scratch import Sim2RealBackbone as ScratchBackbone
 
 PATH_BASELINE = "./saved_models/base_model.pth" 
 PATH_PROPOSED = "./saved_models/proposed_strong_model.pth"
-PATH_SCRATCH = "./saved_models/proposed_best.pth"     
+PATH_SCRATCH = "./saved_models/scratch_model.pth"     
 
 TEST_IMAGE_PATH = "./dataset/lfw_aligned/George_Voinovich/George_Voinovich_0002.jpg"
 

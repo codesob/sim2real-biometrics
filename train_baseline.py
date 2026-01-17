@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 DATA_DIR = "./dataset/digiface_aligned"  
-SAVE_DIR = "./saved_models"
+SAVE_DIR = "./plot_image"
 BATCH_SIZE = 32      
 EPOCHS = 20
 LR = 0.01 

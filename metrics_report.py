@@ -48,16 +48,19 @@ def evaluate_biometrics(labels, scores, far_target=1e-3):
     axes[0].legend()
     axes[0].grid(alpha=0.3)
 
+    # Security View (Zoom @ FAR) - Log Scale
     axes[1].plot(fpr, tpr, color='green', lw=2)
-    axes[1].set_xlim([0.0, 0.05])
-    axes[1].set_ylim([0.6, 1.0])
+    axes[1].set_xscale('log')
+    axes[1].set_xlim([1e-5, 1.0]) # Standard FAR range
+    axes[0].set_ylim([0.0, 1.05]) # Ensure ROC shows full range
+    axes[1].set_ylim([0.0, 1.05]) # Dynamic range for security view
     axes[1].axvline(far_target, color='purple', linestyle=':', label=f'FAR target {far_target}')
     axes[1].scatter(far_target, tar_at_target, color='purple')
-    axes[1].set_title(f"B. Security View (Zoom @ {far_target} FAR)")
-    axes[1].set_xlabel("False Positive Rate (Imposters)")
-    axes[1].set_ylabel("True Verification Rate (Legits)")
+    axes[1].set_title(f"B. Security View (TAR @ FAR)")
+    axes[1].set_xlabel("False Acceptance Rate (FAR)")
+    axes[1].set_ylabel("True Verification Rate (TPR)")
     axes[1].legend()
-    axes[1].grid(alpha=0.3)
+    axes[1].grid(True, which="both", ls="--", alpha=0.3)
 
     # Confusion Matrix
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['No Match', 'Match'])

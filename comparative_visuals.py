@@ -14,9 +14,9 @@ import random
 from tqdm import tqdm
 
 LFW_DIR = "./dataset/lfw_aligned"
-BASELINE_PATH = "./saved_models/baseline_model.pth"
-PROPOSED_PATH = "./saved_models/best_model.pth"
-SCRATCH_PATH = "./saved_models/best_scratch_model.pth"
+BASELINE_PATH = "./saved_models/base_model.pth"
+PROPOSED_PATH = "./saved_models/proposed_strong_model.pth"
+SCRATCH_PATH = "./saved_models/scratch_model.pth"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 OUTPUT_DIR = "./final_comparison_plots"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
